@@ -6,8 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
-    <link rel="shortcut icon" type="image/png" href="map_icon.png" />
-    <title>Greenway Marker Map</title>
+    <title>MedFlight Landing Zones Map</title>
     <style>
       html, body, #map-canvas {
         height: 100%;
@@ -19,6 +18,32 @@
         width: 100%;
       }
     </style>
+
+    <!--FavIcons-->
+    <link rel="apple-touch-icon" sizes="57x57" href="icons/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="icons/apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="icons/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="icons/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="icons/apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="icons/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="icons/apple-touch-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="icons/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon-180x180.png">
+    <link rel="icon" type="image/png" href="icons/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="icons/android-chrome-192x192.png" sizes="192x192">
+    <link rel="icon" type="image/png" href="icons/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="icons/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="icons/manifest.json">
+    <link rel="mask-icon" href="icons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="icons/favicon.ico">
+    <meta name="apple-mobile-web-app-title" content="MedFlight Map">
+    <meta name="application-name" content="MedFlight Map">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-TileImage" content="icons/mstile-144x144.png">
+    <meta name="msapplication-config" content="icons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+
+
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
     <script src="jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
@@ -82,7 +107,7 @@
             if(info[8] !== undefined){
               var GPS = info[8].split(",");
               var loc = new google.maps.LatLng(GPS[0],GPS[1]);
-              addCircle(loc);
+              addCircle(loc,info[4],info[6],info[5]);
             }
           })
         })
@@ -91,7 +116,7 @@
 
       google.maps.event.addDomListener(window, 'load', initialize);
 
-    function addCircle(loc){
+    function addCircle(loc,code,location,DN){
       var center = loc;
       //circle large
       var CircleOptions = {
@@ -117,9 +142,11 @@
         center: center,
         radius: 100
       };
-      Circles.push(new google.maps.Circle(CircleOptions));
-      google.maps.event.addListener(map, 'click', function(event) {
-         move_zone(event.latLng);
+      var zone = new google.maps.Circle(CircleOptions);
+      google.maps.event.addListener(zone, 'click', function(event) {
+        //console.log(event.latLng);
+        $("#code").html(code);
+        $("#location").html(location + "<br>Usage: "+DN);
       });
 
     }
@@ -128,8 +155,9 @@
     </script>
   <body>
     <div class="container-fluid">
-      <div class="row">
-        <h1>Info</h1>
+      <div id="info" class="row">
+        <h1 id="code" class="col-xs-4">Zones</h1>
+        <div id="location" class="col-xs-8">Click Zone for Information</div>
       </div>
     </div>
 
